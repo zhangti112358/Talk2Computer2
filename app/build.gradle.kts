@@ -1,7 +1,22 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
 }
+
+// 从 secrets.properties（已 gitignore）读取本地密钥/配置，构建时注入 BuildConfig
+val secrets = Properties().apply {
+    val f = rootProject.file("secrets.properties")
+    if (f.exists()) f.inputStream().use { load(it) }
+}
+val localConfigJson = secrets.stringPropertyNames()
+    .joinToString(",", "{", "}") { name ->
+        val value = secrets.getProperty(name).orEmpty()
+            .replace("\\", "\\\\")
+            .replace("\"", "\\\"")
+        "\"$name\":\"$value\""
+    }
 
 android {
     namespace = "com.zhangti.talk2computer2"
@@ -17,6 +32,13 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
+
+        // 本地配置 JSON（来自 secrets.properties 的全部条目）
+        buildConfigField(
+            "String",
+            "LOCAL_CONFIG_JSON",
+            "\"${localConfigJson.replace("\\", "\\\\").replace("\"", "\\\"")}\""
+        )
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -34,6 +56,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
