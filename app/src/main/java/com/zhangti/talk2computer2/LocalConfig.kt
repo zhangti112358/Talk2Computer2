@@ -3,15 +3,13 @@ package com.zhangti.talk2computer2
 import org.json.JSONObject
 
 /**
- * 本地配置/密钥统一入口。
+ * 本地密钥的低层读取器。
  *
  * 来源：项目根目录 secrets.properties（已 gitignore）的全部 key=value 条目，
- * 构建时注入 BuildConfig.LOCAL_CONFIG_JSON。不止 API key，baseUrl、model 等配置都可以放。
+ * 构建时注入 BuildConfig.LOCAL_CONFIG_JSON。
  *
- * 未来做「用户自己输入」时：
- * 1. 用 DataStore 保存用户输入的配置；
- * 2. 在 [get] 里先查用户配置、查不到再回落本地值。
- *    优先级：用户输入 > 本地构建值。
+ * 上层请用 [AppConfig] 数据类做类型化访问，不要直接调用这里。
+ * 未来做「用户自己输入」时：在 AppConfig 里先查用户配置（DataStore）、查不到再回落本地值。
  */
 object LocalConfig {
 
