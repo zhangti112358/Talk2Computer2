@@ -58,6 +58,10 @@ android {
         compose = true
         buildConfig = true
     }
+    // onnx 模型不压缩，便于直接读取
+    androidResources {
+        noCompress += "onnx"
+    }
 }
 
 dependencies {
@@ -68,6 +72,8 @@ dependencies {
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.activity.compose)
+    // Silero VAD 推理引擎（speech/vad）
+    implementation(libs.onnxruntime.android)
     debugImplementation(libs.androidx.compose.ui.tooling)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
